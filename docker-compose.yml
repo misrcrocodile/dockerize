@@ -44,7 +44,6 @@ services:
     ports:
       - "80:80"
     volumes:
-      - wordpress:/var/www/html/blog
       - ./nginx-conf:/etc/nginx/conf.d
       - ./logs/nginx:/var/log/nginx
     networks:
