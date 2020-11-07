@@ -1,9 +1,22 @@
 version: '3'
 
 services:
+  nginx-proxy:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx-conf:/etc/nginx/conf.d
+      - ./logs/nginx:/var/log/nginx
+    depends_on:
+      - redmine
+      - gitlab
+      - jenkins
+      - wordpress
+    restart: unless-stopped
+
   wordpress_db:
     image: mysql:8.0
-    container_name: db
     restart: unless-stopped
     environment:
       - MYSQL_DATABASE=wp_db
@@ -11,18 +24,15 @@ services:
       - MYSQL_USER=wp_user
       - MYSQL_PASSWORD=wp_password
     volumes: 
-      - dbdata:/var/lib/mysql
+      - wordpress_mysql_data:/var/lib/mysql
     command: '--default-authentication-plugin=mysql_native_password'
-    networks:
-      - app-network
-      
+
   wordpress:
     depends_on: 
       - wordpress_db
-    image: wordpress:php7.4-apache
-    container_name: wordpress
-    restart: unless-stopped
+    build: ./wordpress
     environment:
+      - WP_SUBDIRECTORY=blog
       - WORDPRESS_DB_HOST=wordpress_db:3306
       - WORDPRESS_DB_USER=wp_user
       - WORDPRESS_DB_PASSWORD=wp_password
@@ -32,28 +42,99 @@ services:
         define('WP_SITEURL','http://localhost/blog');
     volumes:
       - wordpress:/var/www/html
-    networks:
-      - app-network
-
-  webserver:
-    depends_on:
-      - wordpress
-    image: nginx:1.15.12-alpine
-    container_name: webserver
     restart: unless-stopped
-    ports:
-      - "80:80"
+
+  redmine:
+    image: sameersbn/redmine:latest
+    environment:
+      DB_ADAPTER: postgresql
+      DB_HOST: redmine_postgres
+      DB_NAME: redmine
+      DB_USER: redmine
+      DB_PASS: redmine
+      MEMCACHE_HOST: redmine_memcached
+      SMTP_USER: user@gmail.com
+      SMTP_PASS: PASSWORD
+      REDMINE_BACKUPS_DIR: /home/redmine/backups
+      REDMINE_RELATIVE_URL_ROOT: /redmine
     volumes:
-      - ./nginx-conf:/etc/nginx/conf.d
-      - ./logs/nginx:/var/log/nginx
-    networks:
-      - app-network
+      - redmine_data:/home/redmine/data
+      - gitlab_data:/home/redmine/gitlab:ro
+      - ./backups/redmine:/home/redmine/backups
+    depends_on:
+      - redmine_postgres
+    restart: unless-stopped
+
+  redmine_postgres:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: redmine
+      POSTGRES_PASSWORD: redmine
+      POSTGRES_DB: redmine
+    volumes:
+      - redmine_postgresql_data:/var/lib/postgresql/data:rw
+    restart: unless-stopped
+
+  redmine_memcached:
+    image: memcached:latest
+    
+  gitlab:
+    restart: always
+    image: gitlab/gitlab-ce:latest
+    volumes:
+      - gitlab_config:/etc/gitlab:Z
+      - gitlab_logs:/var/log/gitlab:Z
+      - gitlab_data:/var/opt/gitlab:Z
+      - ./backups/gitlab:/mnt/backups/gitlab:Z
+    environment:
+      GITLAB_OMNIBUS_CONFIG: |
+        # URL
+        external_url 'http://gitlab/gitlab'
+        # Backup directory
+        gitlab_rails['backup_path'] = '/mnt/backups/gitlab'
+        # Timezone
+        gitlab_rails['time_zone'] = 'Asia/Tokyo'
+        # E-mail
+        gitlab_rails['smtp_enable'] = true
+        gitlab_rails['smtp_address'] = "smtp.gmail.com"
+        gitlab_rails['smtp_port'] = 587
+        gitlab_rails['smtp_user_name'] = "user@gmail.com"
+        gitlab_rails['smtp_password'] = "PASSWORD"
+        gitlab_rails['smtp_domain'] = "smtp.gmail.com"
+        gitlab_rails['smtp_authentication'] = "login"
+        gitlab_rails['smtp_enable_starttls_auto'] = true
+        gitlab_rails['smtp_tls'] = false
+        gitlab_rails['smtp_openssl_verify_mode'] = 'peer' # Can be: 'none', 'peer', 'client_once', 'fail_if_no_peer_cert', see http://api.rubyonrails.org/classes/ActionMailer/Base.html
+      # Add any other gitlab.rb configuration here, each on its own line
+      GITLAB_RELATIVE_URL_ROOT: /gitlab
+    restart: unless-stopped
+
+  jenkins:
+    image: jenkins:latest
+    ports:
+      - "50000:50000"
+    environment:
+      JENKINS_OPTS: "--prefix=/jenkins"
+    volumes:
+      - jenkins_data:/var/jenkins_home
+      - ./backups/jenkins:/backups
 
 volumes:
-  certbot-etc:
+  redmine_postgresql_data:
+    driver: local
+  redmine_data:
+    driver: local
+  gitlab_config:
+    driver: local
+  gitlab_logs:
+    driver: local
+  gitlab_data:
+    driver: local
+  jenkins_data:
+    driver: local
+  gitlab_postgresql_data:
+    driver: local
   wordpress:
-  dbdata:
-
-networks:
-  app-network:
-    driver: bridge
+    driver: local
+  wordpress_mysql_data:
+    driver: local
