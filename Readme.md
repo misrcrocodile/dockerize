@@ -1,6 +1,6 @@
 # Dockerize
 
-##1. Some docker command
+## 1. Some docker command
 ```
 # For adding new service
 docker-compose stop
