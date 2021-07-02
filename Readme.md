@@ -22,5 +22,8 @@ docker-compose restart stock-crawler
 docker exec -it [docker-container-id] bash
 mysql -u root -p
 
+# add new container to running docker-compose
+docker-compose up -d --no-deps --build <service_name>
+
 ```
 
