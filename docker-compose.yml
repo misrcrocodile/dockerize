@@ -145,7 +145,24 @@ services:
     volumes:
       - ./piwigo:/config/nginx/site-confs
     restart: unless-stopped
-  
+
+  adguard:
+    container_name: adguard 
+    domainname: docker
+    hostname: adguard
+    image: adguard/adguardhome:latest
+    ports:
+      - '53:53/tcp'
+      - '53:53/udp'
+      - '67:67/udp'
+      - '853:853/tcp'
+      - '3000:3000/tcp'
+    restart: unless-stopped
+    volumes:
+      - ./adguard/work:/opt/adguardhome/work
+      - ./adguard/conf:/opt/adguardhome/conf
+      - ./adguard/certs:/opt/adguardhome/certs:ro
+      
   # pihole:
   #   container_name: pihole
   #   image: pihole/pihole:latest
