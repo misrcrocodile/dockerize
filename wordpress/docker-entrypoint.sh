@@ -82,13 +82,13 @@ if [[ "$1" == apache2* ]] || [ "$1" == php-fpm ]; then
 		done
 		tar "${sourceTarArgs[@]}" . | tar "${targetTarArgs[@]}"
 		echo >&2 "Complete! WordPress has been successfully copied to $PWD"
-		
+
 		# Create symlink for SubDirectory
 		if [ ! -x $WP_SUBDIRECTORY ]; then
 			ln -s /var/www/html /var/www/html/$WP_SUBDIRECTORY
 			echo >&2 "Symlink is created for SubDirectory: /var/www/html/$WP_SUBDIRECTORY"
 		fi
-		
+
 		if [ ! -e .htaccess ]; then
 			# NOTE: The "Indexes" option is disabled in the php:apache base image
 			cat > .htaccess <<-'EOF'

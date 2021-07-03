@@ -1,20 +1,29 @@
-Stop the container(s) using the following command:
-docker-compose down
-Delete all containers using the following command:
-docker rm -f $(docker ps -a -q)
-Delete all volumes using the following command:
-docker volume rm $(docker volume ls -q)
-Restart the containers using the following command:
+# Dockerize
+
+## 1. Some docker command
+```
+# For adding new service
+docker-compose stop
+docker-compose up --no-start
+docker-compose logs --follow
 docker-compose up -d
 
+# Clear after docker-compose down or docker-compose stop
+docker system prune -f && docker volume prune -f && docker network prune -f && docker container prune -f
 
-docker image prune
+# Remove docker container via docker command
+docker container stop $(docker container ls -aq)
+docker container rm $(docker container ls -aq)
 
-docker container prune
+# Restart docker container
+docker-compose restart stock-crawler
 
-docker volume prune
+# access to maria db and create table
+docker exec -it [docker-container-id] bash
+mysql -u root -p
 
-docker network prune
+# add new container to running docker-compose
+docker-compose up -d --no-deps --build <service_name>
 
-docker system prune
-sudo docker system prune -f && sudo docker volume prune -f && sudo docker container prune -f
+```
+
