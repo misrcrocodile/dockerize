@@ -22,6 +22,9 @@ docker-compose restart stock-crawler
 docker exec -it [docker-container-id] bash
 mysql -u root -p
 
+# kill process belong to Stock_user
+Select concat('KILL ',id,';') from information_schema.processlist where user='STOCK_USER';
+
 # add new container to running docker-compose
 docker-compose up -d --no-deps --build <service_name>
 
