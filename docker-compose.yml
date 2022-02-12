@@ -49,7 +49,9 @@ services:
   stock-crawler:
     depends_on: 
       - mariadb
-    build: ./stockCrawler
+    environment:
+      - GIT_URL=https://misr.xyz/gitlab/misr/stock-server
+    build: ./nodeApp
     container_name: stockCrawler
     restart: unless-stopped
 
