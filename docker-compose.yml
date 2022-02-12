@@ -11,3 +11,13 @@ services:
     volumes:
       - ./mysql:/docker-entrypoint-initdb.d
     restart: unless-stopped
+
+  node-js-app:
+    build: ./nodeApp
+    container_name: NodeJSApp
+    environment:
+      - GIT_URL=https://misr.xyz/gitlab/misr/stock-server
+    restart: unless-stopped
+    depends_on: 
+      - mariadb
+
