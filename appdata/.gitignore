@@ -1,8 +1,0 @@
-# Ignore everything
-*
-
-# But not these files...
-!.gitignore
-!nginx\proxy-confs\*.conf
-!nginx\proxy-confs\*.conf1
-!www
