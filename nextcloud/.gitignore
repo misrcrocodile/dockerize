@@ -1,0 +1,10 @@
+# Ignore everything
+*
+
+# But not these files...
+!.gitignore
+!config
+!data/.htaccess
+!data/.ocdata
+!config/.htaccess
+!config/config.php
