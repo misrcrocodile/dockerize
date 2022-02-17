@@ -108,7 +108,7 @@ $CONFIG = [
  * Your host server name, for example ``localhost``, ``hostname``,
  * ``hostname.example.com``, or the IP address. To specify a port use
  * ``hostname:####``; to specify a Unix socket use
- * ``localhost:/path/to/socket``.
+ * ``/path/to/directory/containing/socket`` e.g. ``/run/postgresql/``.
  */
 'dbhost' => '',
 
@@ -195,6 +195,16 @@ $CONFIG = [
 'default_locale' => 'en_US',
 
 /**
+ * This sets the default region for phone numbers on your Nextcloud server,
+ * using ISO 3166-1 country codes such as ``DE`` for Germany, ``FR`` for France, …
+ * It is required to allow inserting phone numbers in the user profiles starting
+ * without the country code (e.g. +49 for Germany).
+ *
+ * No default value!
+ */
+'default_phone_region' => 'GB',
+
+/**
  * With this setting a locale can be forced for all users. If a locale is
  * forced, the users are also unable to change their locale in the personal
  * settings. If users shall be unable to change their locale, but users have
@@ -238,6 +248,9 @@ $CONFIG = [
 
 /**
  * The lifetime of a session after inactivity.
+ *
+ * The maximum possible time is limited by the session.gc_maxlifetime php.ini setting
+ * which would overwrite this option if it is less than the value in the config.php
  *
  * Defaults to ``60*60*24`` seconds (24 hours)
  */
@@ -296,6 +309,15 @@ $CONFIG = [
 'auth.webauthn.enabled' => true,
 
 /**
+ * By default the login form is always available. There are cases (SSO) where an
+ * admin wants to avoid users entering their credentials to the system if the SSO
+ * app is unavailable.
+ *
+ * This will show an error. But the the direct login still works with adding ?direct=1
+ */
+'hide_login_form' => false,
+
+/**
  * The directory where the skeleton files are located. These files will be
  * copied to the data directory of new users. Leave empty to not copy any
  * skeleton files.
@@ -306,6 +328,21 @@ $CONFIG = [
  * Defaults to ``core/skeleton`` in the Nextcloud directory.
  */
 'skeletondirectory' => '/path/to/nextcloud/core/skeleton',
+
+
+/**
+ * The directory where the template files are located. These files will be
+ * copied to the template directory of new users. Leave empty to not copy any
+ * template files.
+ * ``{lang}`` can be used as a placeholder for the language of the user.
+ * If the directory does not exist, it falls back to non dialect (from ``de_DE``
+ * to ``de``). If that does not exist either, it falls back to ``default``
+ *
+ * If this is not set creating a template directory will only happen if no custom
+ * ``skeletondirectory`` is defined, otherwise the shipped templates will be used
+ * to create a template directory for the user.
+ */
+'templatedirectory' => '/path/to/nextcloud/templates',
 
 /**
  * If your user backend does not allow password resets (e.g. when it's a
@@ -686,7 +723,9 @@ $CONFIG = [
 
 /**
  * Check if Nextcloud is up-to-date and shows a notification if a new version is
- * available.
+ * available. It sends current version, php version, installation and last update
+ * time and release channel to the updater server which responds with the latest
+ * available version based on those metrics.
  *
  * Defaults to ``true``
  */
@@ -855,16 +894,16 @@ $CONFIG = [
 ],
 
 /**
- * This uses PHP.date formatting; see http://php.net/manual/en/function.date.php
+ * This uses PHP.date formatting; see https://www.php.net/manual/en/function.date.php
  *
  * Defaults to ISO 8601 ``2005-08-15T15:52:01+00:00`` - see \DateTime::ATOM
- * (https://secure.php.net/manual/en/class.datetime.php#datetime.constants.atom)
+ * (https://www.php.net/manual/en/class.datetime.php#datetime.constants.atom)
  */
 'logdateformat' => 'F d, Y H:i:s',
 
 /**
  * The timezone for logfiles. You may change this; see
- * http://php.net/manual/en/timezones.php
+ * https://www.php.net/manual/en/timezones.php
  *
  * Defaults to ``UTC``
  */
@@ -932,6 +971,12 @@ $CONFIG = [
  * Defaults to ``https://apps.nextcloud.com/api/v1``
  */
 'appstoreurl' => 'https://apps.nextcloud.com/api/v1',
+
+/**
+ * Filters allowed installable apps from the appstore.
+ * Empty array will prevent all apps from the store to be found.
+ */
+'appsallowlist' => [],
 
 /**
  * Use the ``apps_paths`` parameter to set the location of the Apps directory,
@@ -1021,6 +1066,7 @@ $CONFIG = [
  * concerns:
  *
  *  - OC\Preview\Illustrator
+ *  - OC\Preview\HEIC
  *  - OC\Preview\Movie
  *  - OC\Preview\MSOffice2003
  *  - OC\Preview\MSOffice2007
@@ -1038,7 +1084,6 @@ $CONFIG = [
  *
  *  - OC\Preview\BMP
  *  - OC\Preview\GIF
- *  - OC\Preview\HEIC
  *  - OC\Preview\JPEG
  *  - OC\Preview\MarkDown
  *  - OC\Preview\MP3
@@ -1052,7 +1097,6 @@ $CONFIG = [
 	'OC\Preview\PNG',
 	'OC\Preview\JPEG',
 	'OC\Preview\GIF',
-	'OC\Preview\HEIC',
 	'OC\Preview\BMP',
 	'OC\Preview\XBitmap',
 	'OC\Preview\MP3',
@@ -1185,13 +1229,25 @@ $CONFIG = [
  * For enhanced security it is recommended to configure Redis
  * to require a password. See http://redis.io/topics/security
  * for more information.
+ *
+ * We also support redis SSL/TLS encryption as of version 6.
+ * See https://redis.io/topics/encryption for more information.
  */
 'redis' => [
 	'host' => 'localhost', // can also be a unix domain socket: '/tmp/redis.sock'
 	'port' => 6379,
 	'timeout' => 0.0,
+	'read_timeout' => 0.0,
+	'user' =>  '', // Optional, if not defined no password will be used.
 	'password' => '', // Optional, if not defined no password will be used.
 	'dbindex' => 0, // Optional, if undefined SELECT will not run and will use Redis Server's default DB Index.
+	// If redis in-transit encryption is enabled, provide certificates
+	// SSL context https://www.php.net/manual/en/context.ssl.php
+	'ssl_context' => [
+		'local_cert' => '/certs/redis.crt',
+		'local_pk' => '/certs/redis.key',
+		'cafile' => '/certs/ca.crt'
+	]
 ],
 
 /**
@@ -1227,7 +1283,15 @@ $CONFIG = [
 	'timeout' => 0.0,
 	'read_timeout' => 0.0,
 	'failover_mode' => \RedisCluster::FAILOVER_ERROR,
+	'user' =>  '', // Optional, if not defined no password will be used.
 	'password' => '', // Optional, if not defined no password will be used.
+	// If redis in-transit encryption is enabled, provide certificates
+	// SSL context https://www.php.net/manual/en/context.ssl.php
+	'ssl_context' => [
+		'local_cert' => '/certs/redis.crt',
+		'local_pk' => '/certs/redis.key',
+		'cafile' => '/certs/ca.crt'
+	]
 ],
 
 
@@ -1236,8 +1300,8 @@ $CONFIG = [
  */
 'memcached_servers' => [
 	// hostname, port and optional weight. Also see:
-	// http://www.php.net/manual/en/memcached.addservers.php
-	// http://www.php.net/manual/en/memcached.addserver.php
+	// https://www.php.net/manual/en/memcached.addservers.php
+	// https://www.php.net/manual/en/memcached.addserver.php
 	['localhost', 11211],
 	//array('other.host.local', 11211),
 ],
@@ -1400,10 +1464,17 @@ $CONFIG = [
 'sharing.managerFactory' => '\OC\Share20\ProviderFactory',
 
 /**
- * Define max number of results returned by the user search for auto-completion
- * Default is unlimited (value set to 0).
+ * Define max number of results returned by the search for auto-completion of
+ * users, groups, etc. The value must not be lower than 0 (for unlimited).
+ *
+ * If more, different sources are requested (e.g. different user backends; or
+ * both users and groups), the value is applied per source and might not be
+ * truncated after collecting the results. I.e. more results can appear than
+ * configured here.
+ *
+ * Default is 25.
  */
-'sharing.maxAutocompleteResults' => 0,
+'sharing.maxAutocompleteResults' => 25,
 
 /**
  * Define the minimum length of the search string before we start auto-completion
@@ -1423,10 +1494,22 @@ $CONFIG = [
 'sharing.force_share_accept' => false,
 
 /**
+ * Set to false to prevent users from setting a custom share_folder
+ */
+'sharing.allow_custom_share_folder' => true,
+
+/**
  * Set to false to stop sending a mail when users receive a share
  */
 'sharing.enable_share_mail' => true,
 
+/**
+ * Set to true to always transfer incoming shares by default
+ * when running "occ files:transfer-ownership".
+ * Defaults to false, so incoming shares are not transferred if not specifically requested
+ * by a command line argument.
+ */
+'transferIncomingShares' => false,
 
 /**
  * All other configuration options
@@ -1435,9 +1518,19 @@ $CONFIG = [
 /**
  * Additional driver options for the database connection, eg. to enable SSL
  * encryption in MySQL or specify a custom wait timeout on a cheap hoster.
+ *
+ * When setting up TLS/SSL for encrypting the connections, you need to ensure that
+ * the passed keys and certificates are readable by the PHP process. In addition
+ * PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT might need to be set to false, if the
+ * database servers certificates CN does not match with the hostname used to connect.
+ * The standard behavior here is different from the MySQL/MariaDB CLI client, which
+ * does not verify the server cert except --ssl-verify-server-cert is passed manually.
  */
 'dbdriveroptions' => [
 	PDO::MYSQL_ATTR_SSL_CA => '/file/path/to/ca_cert.pem',
+	PDO::MYSQL_ATTR_SSL_KEY => '/file/path/to/mysql-client-key.pem',
+	PDO::MYSQL_ATTR_SSL_CERT => '/file/path/to/mysql-client-cert.pem',
+	PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT => false,
 	PDO::MYSQL_ATTR_INIT_COMMAND => 'SET wait_timeout = 28800'
 ],
 
@@ -1481,6 +1574,24 @@ $CONFIG = [
 'mysql.utf8mb4' => false,
 
 /**
+ * For search queries in the database, a default collation – depending on the
+ * character set – is chosen. In some cases a different behaviour is desired,
+ * for instances when a accent sensitive search is desired.
+ *
+ * MariaDB and MySQL have an overlap in available collations, but also
+ * incompatible ones, also depending on the version of the database server.
+ *
+ * This option allows to override the automatic choice. Example:
+ *
+ * 'mysql.collation' => 'utf8mb4_0900_as_ci',
+ *
+ * This setting has no effect on setup or creating tables. In those cases
+ * always utf8[mb4]_bin is being used. This setting is only taken into
+ * consideration in SQL queries that utilize LIKE comparison operators.
+ */
+'mysql.collation' => null,
+
+/**
  * Database types that are supported for installation.
  *
  * Available:
@@ -1504,7 +1615,7 @@ $CONFIG = [
 /**
  * Override where Nextcloud stores temporary files. Useful in situations where
  * the system temporary directory is on a limited space ramdisk or is otherwise
- * restricted, or if external storages which do not support streaming are in
+ * restricted, or if external storage which do not support streaming are in
  * use.
  *
  * The Web server user must have write access to this directory.
@@ -1583,10 +1694,15 @@ $CONFIG = [
 'theme' => '',
 
 /**
- * The default cipher for encrypting files. Currently AES-128-CFB and
- * AES-256-CFB are supported.
+ * The default cipher for encrypting files. Currently supported are:
+ *  - AES-256-CTR
+ *  - AES-128-CTR
+ *  - AES-256-CFB
+ *  - AES-128-CFB
+ *
+ * Defaults to ``AES-256-CTR``
  */
-'cipher' => 'AES-256-CFB',
+'cipher' => 'AES-256-CTR',
 
 /**
  * The minimum Nextcloud desktop client version that will be allowed to sync with
@@ -1601,6 +1717,15 @@ $CONFIG = [
  * Defaults to ``2.0.0``
  */
 'minimum.supported.desktop.version' => '2.0.0',
+
+/**
+ * Option to allow local storage to contain symlinks.
+ * WARNING: Not recommended. This would make it possible for Nextcloud to access
+ * files outside the data directory and could be considered a security risk.
+ *
+ * Defaults to ``false``
+ */
+'localstorage.allowsymlinks' => false,
 
 /**
  * EXPERIMENTAL: option whether to include external storage in quota
@@ -1624,7 +1749,7 @@ $CONFIG = [
 /**
  * Specifies how often the local filesystem (the Nextcloud data/ directory, and
  * NFS mounts in data/) is checked for changes made outside Nextcloud. This
- * does not apply to external storages.
+ * does not apply to external storage.
  *
  * 0 -> Never check the filesystem for outside changes, provides a performance
  * increase when it's certain that no changes are made directly to the
@@ -1846,4 +1971,15 @@ $CONFIG = [
  */
 
 'login_form_autocomplete' => true,
+
+/**
+ * Disable background scanning of files
+ *
+ * By default, a background job runs every 10 minutes and execute a background
+ * scan to sync filesystem and database. Only users with unscanned files
+ * (size < 0 in filecache) are included. Maximum 500 users per job.
+ *
+ * Defaults to ``true``
+ */
+'files_no_background_scan' => false,
 ];

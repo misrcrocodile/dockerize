@@ -49,15 +49,15 @@ services:
   stock-crawler:
     depends_on: 
       - mariadb
-    build: ./stockCrawler
+    environment:
+      - GIT_URL=https://misr.xyz/gitlab/misr/stock-server
+    build: ./nodeApp
     container_name: stockCrawler
     restart: unless-stopped
 
   nextcloud:
     image: linuxserver/nextcloud
     container_name: nextcloud
-    depends_on: 
-      - mariadb
     environment:
       - PUID=1000
       - PGID=1000
@@ -69,7 +69,7 @@ services:
     volumes:
       - ./nextcloud/config:/config/www/nextcloud/config/
       - ./nextcloud/data:/data
-    depends_on:
+    depends_on: 
       - mariadb
     restart: unless-stopped
 
@@ -132,7 +132,6 @@ services:
         gitlab_rails['smtp_openssl_verify_mode'] = 'peer' # Can be: 'none', 'peer', 'client_once', 'fail_if_no_peer_cert', see http://api.rubyonrails.org/classes/ActionMailer/Base.html
       # Add any other gitlab.rb configuration here, each on its own line
       GITLAB_RELATIVE_URL_ROOT: /gitlab
-    restart: unless-stopped
 
   piwigo:
     image: ghcr.io/linuxserver/piwigo
