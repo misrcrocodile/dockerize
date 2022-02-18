@@ -59,7 +59,7 @@ services:
   telegram-bot:
     environment:
       - GIT_URL=https://misr.xyz/gitlab/misr/telegram-bot
-      - API_KEY=5058934112:AAFZaB4M9P6YjTAeULgFQXSU05wNyPGe9tM
+      - API_KEY=
     build: ./pythonApp
     container_name: telegramBot
     restart: unless-stopped
