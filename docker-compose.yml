@@ -54,6 +54,15 @@ services:
     build: ./nodeApp
     container_name: stockCrawler
     restart: unless-stopped
+  
+  # TelegramBot
+  telegram-bot:
+    environment:
+      - GIT_URL=https://misr.xyz/gitlab/misr/telegram-bot
+      - API_KEY=5058934112:AAFZaB4M9P6YjTAeULgFQXSU05wNyPGe9tM
+    build: ./pythonApp
+    container_name: telegramBot
+    restart: unless-stopped
 
   nextcloud:
     image: linuxserver/nextcloud
@@ -161,7 +170,6 @@ services:
       - ./adguard/work:/opt/adguardhome/work
       - ./adguard/conf:/opt/adguardhome/conf
       - ./adguard/certs:/opt/adguardhome/certs:ro
-      
   # pihole:
   #   container_name: pihole
   #   image: pihole/pihole:latest
