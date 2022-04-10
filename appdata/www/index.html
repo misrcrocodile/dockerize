@@ -1,234 +1,89 @@
 <!DOCTYPE html>
-<html style="font-size: 16px;" class="u-responsive-xl"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="keywords" content="misr homepage">
-    <meta name="description" content="">
-    <meta name="page_type" content="np-template-header-footer-from-plugin">
-    <title>Misr's Homepage</title>
-    <link rel="stylesheet" href="./nicepage.css" media="screen">
-    <style class="u-style">
-    .u-body {
-      background-color:#f2f2f2;
-    }
-    .u-section-2 {
-      background-image: none;
-    }
-    .u-section-2 .u-sheet-1 {
-      min-height: 902px;
-    }
-    .u-section-2 .u-image-1 {
-      width: 420px;
-      height: 420px;
-      background-image: url("avatar.jpg");
-      background-position: 50% 50%;
-      margin: 60px auto 0;
-    }
-    .u-section-2 .u-group-1 {
-      width: 950px;
-      min-height: 284px;
-      margin: 20px auto 0 95px;
-    }
-    .u-section-2 .u-container-layout-1 {
-      padding: 28px 28px 30px;
-    }
-    .u-section-2 .u-text-1 {
-      font-size: 2.25rem;
-      margin: 20px 0 0;
-    }
-    .u-section-2 .u-text-2 {
-      font-size: 4.5rem;
-      font-family: "Playfair Display", serif;
-      font-weight: 700;
-      margin: 20px 0 0;
-    }
-    .u-section-2 .u-text-3 {
-      font-size: 1.25rem;
-      font-weight: 300;
-      margin: 21px 0 0;
-    }
-    .u-section-2 .u-layout-wrap-1 {
-      width: 718px;
-      margin: 0 auto 60px;
-    }
-    .u-section-2 .u-layout-cell-1 {
-      min-height: 58px;
-    }
-    .u-section-2 .u-container-layout-2 {
-      padding: 0 20px 0 30px;
-    }
-    .u-section-2 .u-btn-1 {
-      background-image: none;
-      letter-spacing: 1px;
-      border-style: none;
-      box-shadow: 0 0 7px 0 rgba(2,16,30,0.7);
-      text-shadow: 0 0 0 rgba(0,0,0,0);
-      font-size: 1.125rem;
-      font-weight: 600;
-      text-transform: none;
-      margin: 0 0 0 auto;
-      padding: 15px 39px 15px 38px;
-    }
-    .u-section-2 .u-layout-cell-2 {
-      min-height: 58px;
-    }
-    .u-section-2 .u-container-layout-3 {
-      padding: 0 30px 0 20px;
-    }
-    .u-section-2 .u-btn-2 {
-      border-style: solid;
-      font-size: 1.125rem;
-      letter-spacing: 0;
-      font-weight: 700;
-      text-transform: uppercase;
-      margin: 0 auto 0 0;
-      padding: 12px 46px 12px 45px;
-    }
-    @media (max-width: 1199px) {
-      .u-section-2 .u-sheet-1 {
-        min-height: 902px;
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MISR</title>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=PT+Sans+Narrow&display=swap" rel="stylesheet">
+
+    <style>
+      * {
+        font-family: "Poppins", sans-serif;
       }
-      .u-section-2 .u-group-1 {
-        width: 940px;
-        margin-left: 0;
+      button {
+        width: 110px;
       }
-    }
-    @media (max-width: 991px) {
-      .u-section-2 .u-sheet-1 {
-        min-height: 944px;
+      .btn {
+        font-size: 0.9rem;
+        padding: 0.75rem;
       }
-      .u-section-2 .u-group-1 {
-        width: 720px;
+      .width-120 {
+        width: 120px;
       }
-      .u-section-2 .u-text-2 {
-        font-size: 4.1875rem;
+      .col {
+        padding: 0.5rem;
+        align-items: center;
+        justify-content: center;
       }
-      .u-section-2 .u-layout-cell-1 {
-        min-height: 100px;
+      .padding-0 {
+        padding: 0;
       }
-      .u-section-2 .u-container-layout-2 {
-        padding-top: 0;
-        padding-bottom: 0;
+	  body {
+		background: linear-gradient(146deg, rgba(255,219,88,1) 0%, rgba(255,229,134,1) 100%);
+		background-attachment: fixed;
+		text-align: center;
+		padding-top: 200px;
+	  }
+      body::after {
+        content: "";
+        background: url("./bg.jpg");
+        background-attachment: fixed;
+        height: 100%;
+        opacity: 0.1;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        position: fixed;
+        z-index: -1;
       }
-      .u-section-2 .u-layout-cell-2 {
-        min-height: 100px;
+
+      .pt-4 {
+        padding-top: 1rem;
       }
-      .u-section-2 .u-container-layout-3 {
-        padding-top: 0;
-        padding-bottom: 0;
+      .max-width-500 {
+        max-width: 500px;
       }
-    }
-    @media (max-width: 767px) {
-      .u-section-2 .u-sheet-1 {
-        min-height: 1044px;
-      }
-      .u-section-2 .u-group-1 {
-        width: 540px;
-      }
-      .u-section-2 .u-container-layout-1 {
-        padding-left: 10px;
-        padding-right: 10px;
-      }
-      .u-section-2 .u-text-2 {
+      h1 {
         font-size: 3rem;
+        margin-bottom: 2rem;
+        font-weight: 600;
       }
-      .u-section-2 .u-layout-wrap-1 {
-        width: 540px;
+      .button-border-bottom {
+        border-left: 1px solid black;
+        border-right: 1px solid black;
+        border-bottom: 1px solid black;
+        border-radius: 0 0 5px 5px;
+        background-color: rgba(0, 0, 0, 0.1);
       }
-      .u-section-2 .u-container-layout-2 {
-        padding-left: 10px;
-        padding-right: 10px;
-        padding-bottom: 20px;
+      .button-border-top {
+        border-top: 1px solid black;
+        border-right: 1px solid black;
+        border-left: 1px solid black;
+        border-radius: 5px 5px 0 0;
+        background-color: rgba(0, 0, 0, 0.1);
       }
-      .u-section-2 .u-btn-1 {
-        margin-right: auto;
-      }
-      .u-section-2 .u-layout-cell-2 {
-        min-height: 78px;
-      }
-      .u-section-2 .u-container-layout-3 {
-        padding-right: 10px;
-        padding-left: 10px;
-      }
-      .u-section-2 .u-btn-2 {
-        margin-left: auto;
-      }
-    }
-    @media (max-width: 575px) {
-      .u-section-2 .u-sheet-1 {
-        min-height: 964px;
-      }
-      .u-section-2 .u-image-1 {
-        width: 340px;
-        height: 340px;
-      }
-      .u-section-2 .u-group-1 {
-        width: 340px;
-      }
-      .u-section-2 .u-layout-wrap-1 {
-        width: 340px;
-      }
-      .u-section-2 .u-layout-cell-2 {
-        min-height: 100px;
-      }
-    }
-    .sns-icon {
-      height: 40px;
-      width: 40px;
-    }
-    .u-btn-width-200 {
-      width: 200px;
-    }
-  </style>
-  
-</head>
-  <body class="u-body" data-new-gr-c-s-check-loaded="14.991.0" data-gr-ext-installed="">
-    <section class="u-align-center u-clearfix u-grey-5 u-section-2" id="carousel_148a">
-      <div class="u-clearfix u-sheet u-sheet-1">
-        <!-- intro with image START -->
-        <div alt="" class="u-image u-image-circle u-image-1" data-image-width="1071" data-image-height="1500"></div>
-        <div class="u-container-style u-group u-group-1">
-          <div class="u-container-layout u-container-layout-1">
-            <h4 class="u-align-center u-custom-font u-font-playfair-display u-text u-text-1">Nguyen Tuan Anh</h4>
-            <h1 class="u-align-center u-custom-font u-font-playfair-display u-text u-text-2">System Engineer</h1>
-            <p class="u-align-center u-text u-text-3">Hi, My name is Nguyen Tuan Anh. I'm a system engineer at JFE Systems, Tokyo. I've recently gotten interested in Photography and PC Gaming. Can go out whole day around somewhere with friend and take many lovely picture or stay at home playing game with friend. Please feel free to contact me!</p>
-          </div>
-        </div>
-        <!-- intro with image END -->
-
-        <!-- blog and readmore button START -->
-        <div class="u-clearfix u-gutter-0 u-layout-wrap">
-          <div class="u-layout">
-            <div class="u-layout-row">
-              <div class="u-align-center-sm u-align-center-xs u-align-right-lg u-align-right-md u-align-right-xl u-container-style u-layout-cell u-left-cell u-size-30 u-layout-cell-1">
-                <div class="u-container-layout u-valign-bottom-sm u-valign-bottom-xs u-valign-middle-lg u-valign-middle-md u-valign-middle-xl u-container-layout-2">
-                  <a href="https://misr.xyz/burogu" class="u-btn u-btn-round u-button-style u-palette-1-base u-radius-50 u-btn-1 u-btn-width-200">BLOG</a>
-                </div>
-              </div>
-              <div class="u-align-center-sm u-align-center-xs u-align-left-lg u-align-left-md u-align-left-xl u-container-style u-layout-cell u-right-cell u-size-30 u-layout-cell-2">
-                <div class="u-container-layout u-valign-middle-lg u-valign-middle-md u-valign-middle-xl u-valign-top-sm u-valign-top-xs u-container-layout-3">
-                  <a href="https://misr.xyz/dashboard" class="u-border-2 u-border-palette-1-base u-btn u-btn-round u-button-style u-hover-palette-1-base u-none u-radius-50 u-text-black u-text-hover-white u-btn-2 u-btn-width-200">
-                    See More
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <!-- blog and readmore button END -->
-
-        <!-- SNS button list START -->
-        <div class="u-container-style u-group u-group-1">
-          <div class="u-container-layout">
-            <div class="u-align-center u-text u-text-3">
-              <a href="https://misr.xyz/fb"><img class="sns-icon" src="ico_fb.png"/></a>
-              <a href="https://misr.xyz/ig"><img class="sns-icon" src="ico_ig.png"/></a>
-              <a href="https://misr.xyz/burogu"><img class="sns-icon" src="ico_wp.png"/></a>
-              <a href="https://misr.xyz/github"><img class="sns-icon" src="ico_github.png"/></a>
-            </div>
-          </div>
-        </div>
-        <!-- SNS button list END -->
-      </div>
-    </section>
-  
-</body></html>
+	  .centerText {
+		font-family: 'PT Sans Narrow', sans-serif;
+		font-size: 200px;
+		color: #222;
+	  }
+    </style>
+  </head>
+  <body>
+	<span class="centerText">MISR</span>
+  </body>
+</html>
