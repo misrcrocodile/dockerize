@@ -1,0 +1,21 @@
+## Version 2020/12/09
+# The following parameters in /data/gitea/conf/app.ini should be edited to match your setup
+# [server]
+# SSH_DOMAIN       = example.com:2222
+# ROOT_URL         = https://example.com/gitea/
+# DOMAIN           = example.com
+
+location /gitlab {
+    return 301 $scheme://$host/gitlab/;
+}
+
+location ^~ /gitlab/ {
+    include /config/nginx/proxy.conf;
+    resolver 127.0.0.11 valid=30s;
+    set $upstream_app gitlab;
+    set $upstream_port 80;
+    set $upstream_proto http;
+    proxy_pass $upstream_proto://$upstream_app:$upstream_port;
+
+    #rewrite /gitlab(.*) $1 break;
+}
